@@ -1,0 +1,161 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Index</title>
+  <style>
+    /* Full-screen dramatic modal styling */
+    :root {
+      --bg: #0b0b0b;
+      --accent: #ff2e2e;
+      --glass: rgba(255,255,255,0.03);
+    }
+    html,body { height:100%; margin:0; font-family: Inter, system-ui, sans-serif; background: var(--bg); color:#fff; }
+    .center {
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      height:100%;
+      padding:1rem;
+    }
+
+    .modal {
+      width:min(900px, 92%);
+      max-width:900px;
+      border-radius:18px;
+      padding:2rem;
+      background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+      box-shadow: 0 12px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.02);
+      text-align:center;
+      transform: translateY(10px);
+      transition: transform .35s ease, opacity .35s ease;
+      opacity: 0;
+    }
+
+    .modal.show { transform: translateY(0); opacity: 1; }
+
+    .title {
+      font-size: clamp(28px, 4.5vw, 56px);
+      letter-spacing: 4px;
+      margin: 0 0 .5rem 0;
+      color: var(--accent);
+      text-shadow: 0 6px 28px rgba(255,46,46,0.08);
+    }
+    .subtitle {
+      margin:0 0 1.25rem 0;
+      color:#ddd;
+      font-size: 1rem;
+      opacity: .9;
+    }
+
+    .typewriter {
+      display:inline-block;
+      border-right: 3px solid rgba(255,255,255,0.12);
+      padding-right:.4rem;
+      font-weight:700;
+      font-size: clamp(18px, 2.2vw, 22px);
+      letter-spacing: 1px;
+    }
+
+    .btn {
+      display:inline-block;
+      margin-top:1.25rem;
+      padding:.6rem 1rem;
+      border-radius:10px;
+      background:transparent;
+      border:1px solid rgba(255,255,255,0.08);
+      color:#fff;
+      cursor:pointer;
+      backdrop-filter: blur(6px);
+    }
+
+    /* Optional fullscreen red flicker for dramatic effect */
+    .flash {
+      position:fixed;
+      inset:0;
+      pointer-events:none;
+      mix-blend-mode: screen;
+      opacity:0;
+      transition: opacity .2s ease;
+      background: radial-gradient(circle at 10% 10%, rgba(255,46,46,0.08), transparent 10%),
+                  radial-gradient(circle at 90% 90%, rgba(255,46,46,0.06), transparent 10%);
+    }
+    .flash.on { opacity: .95; }
+  </style>
+</head>
+<body>
+  <div class="center">
+    <div id="modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="title">
+      <h1 id="title" class="title">YOU ARE HACKED</h1>
+      <p class="subtitle">This is a local demo popup. Nothing was hacked — it's just a message.</p>
+      <div class="typewriter" id="tw">Initializing . . .</div>
+      <div>
+        <button class="btn" id="closeBtn">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="flash" class="flash" aria-hidden="true"></div>
+
+  <script>
+    // Immediately show a native alert first (simple popup)
+    alert("YOU ARE HACKED");
+
+    // Then show the styled modal
+    const modal = document.getElementById('modal');
+    const tw = document.getElementById('tw');
+    const closeBtn = document.getElementById('closeBtn');
+    const flash = document.getElementById('flash');
+
+    function showModal() {
+      modal.classList.add('show');
+
+      // typewriter text
+      const texts = [
+        "System breach detected.",
+        "Tracing source... FAILED",
+        "All ports: OPEN",
+        "YOU ARE HACKED"
+      ];
+      let i = 0, char = 0;
+
+      function typeNext() {
+        if (i >= texts.length) return;
+        const str = texts[i];
+        char = 0;
+        tw.textContent = '';
+        const t = setInterval(() => {
+          tw.textContent += str[char++];
+          if (char === str.length) {
+            clearInterval(t);
+            i++;
+            setTimeout(typeNext, 700);
+          }
+        }, 40);
+      }
+      typeNext();
+
+      // short dramatic flash
+      flash.classList.add('on');
+      setTimeout(()=> flash.classList.remove('on'), 220);
+    }
+
+    // show after a tiny delay so the modal animation is visible after the native alert
+    setTimeout(showModal, 200);
+
+    // close handler
+    closeBtn.addEventListener('click', () => {
+      modal.classList.remove('show');
+      tw.textContent = 'Closing...';
+    });
+
+    // allow ESC to close
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        modal.classList.remove('show');
+      }
+    });
+  </script>
+</body>
+</html>
